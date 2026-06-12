@@ -34,33 +34,32 @@ export default function Sidebar() {
   const { role, logout, user } = useAuth()
   const [isOpen, setIsOpen] = useState(true)
 
-  const memberNav = [
+  const studentNav = [
     { to: '/dashboard', label: 'Dashboard', icon: '📊' },
-    { to: '/opportunities', label: 'Opportunities', icon: '🎯' },
-    { to: '/idea-generator', label: 'Idea Generator', icon: '💡' },
-    { to: '/team-matching', label: 'Team Matching', icon: '👥' },
-    { to: '/workspace', label: 'Workspace', icon: '📋' },
-    { to: '/analytics', label: 'Analytics', icon: '📈' },
+    { to: '/opportunities', label: 'Courses', icon: '📚' },
+    { to: '/idea-generator', label: 'AI Assistant', icon: '🤖' },
+    { to: '/team-matching', label: 'Study Groups', icon: '👥' },
+    { to: '/workspace', label: 'Learning', icon: '📝' },
+    { to: '/analytics', label: 'Progress', icon: '📈' },
     { to: '/profile', label: 'Profile', icon: '👤' },
+    { to: '/pricing', label: 'Pricing', icon: '💳' },
   ]
 
-  const leaderNav = [...memberNav, { to: '/team-management', label: 'Team Management', icon: '🛠️' }]
-
-  const managerNav = [
-    { to: '/manager', label: 'Dashboard', icon: '📊', end: true },
-    { to: '/manager/teams', label: 'Team Monitoring', icon: '👁️' },
-    { to: '/manager/invitations', label: 'Invitations', icon: '📬' },
+  const teacherNav = [
+    { to: '/teacher', label: 'Dashboard', icon: '🎓', end: true },
+    { to: '/teacher/teams', label: 'Project Monitoring', icon: '📚' },
+    { to: '/teacher/invitations', label: 'Student Requests', icon: '📩' },
   ]
 
   const adminNav = [
     { to: '/admin', label: 'Dashboard', icon: '🏢', end: true },
-    { to: '/admin/users', label: 'User Management', icon: '👥' },
-    { to: '/admin/subscriptions', label: 'Subscriptions', icon: '💳' },
+    { to: '/admin/users', label: 'Users', icon: '👥' },
     { to: '/admin/payments', label: 'Payments', icon: '💰' },
-    { to: '/admin/reports', label: 'System Reports', icon: '📊' },
+    { to: '/admin/subscriptions', label: 'Subscriptions', icon: '💳' },
+    { to: '/admin/reports', label: 'Reports', icon: '📊' },
   ]
 
-  const navItems = role === 'member' ? memberNav : role === 'leader' ? leaderNav : role === 'manager' ? managerNav : role === 'admin' ? adminNav : []
+  const navItems = role === 'student' ? studentNav : role === 'teacher' ? teacherNav : role === 'admin' ? adminNav : []
 
   return (
     <>

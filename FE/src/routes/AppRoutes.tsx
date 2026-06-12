@@ -2,63 +2,50 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import AuthLayout from '../layouts/AuthLayout'
 import AdminLayout from '../layouts/AdminLayout'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth, Role } from '../contexts/AuthContext'
 
-// Public pages
 import Landing from '../pages/public/Landing'
 import Pricing from '../pages/public/Pricing'
 import Login from '../pages/auth/Login'
 import Register from '../pages/auth/Register'
 
-// Member pages
-import Dashboard from '../pages/member/Dashboard'
-import Profile from '../pages/member/Profile'
-import Opportunities from '../pages/member/Opportunities'
-import IdeaGenerator from '../pages/member/IdeaGenerator'
-import TeamMatching from '../pages/member/TeamMatching'
-import Workspace from '../pages/member/Workspace'
-import Analytics from '../pages/member/Analytics'
+import Dashboard from '../pages/student/Dashboard'
+import Profile from '../pages/student/Profile'
+import Opportunities from '../pages/student/Opportunities'
+import IdeaGenerator from '../pages/student/IdeaGenerator'
+import TeamMatching from '../pages/student/TeamMatching'
+import Workspace from '../pages/student/Workspace'
+import Analytics from '../pages/student/Analytics'
 
-// Leader
-import TeamManagement from '../pages/leader/TeamManagement'
+import TeacherDashboard from '../pages/teacher/TeacherDashboard'
+import TeamMonitoring from '../pages/teacher/TeamMonitoring'
+import StudentInvitations from '../pages/teacher/StudentInvitations'
 
-// Manager
-import ManagerDashboard from '../pages/manager/ManagerDashboard'
-import TeamMonitoring from '../pages/manager/TeamMonitoring'
-import TeamDetail from '../pages/manager/TeamDetail'
-import Invitations from '../pages/manager/Invitations'
-
-// Admin
 import AdminDashboard from '../pages/admin/AdminDashboard'
 import UserManagement from '../pages/admin/UserManagement'
 import SubscriptionManagement from '../pages/admin/SubscriptionManagement'
 import PaymentManagement from '../pages/admin/PaymentManagement'
 import ReportManagement from '../pages/admin/ReportManagement'
 
-const ProtectedRoute = ({ children, allowed }: { children: JSX.Element; allowed: string[] }) => {
+const ProtectedRoute = ({ children, allowed }: { children: JSX.Element; allowed: Role[] }) => {
   const { role } = useAuth()
-  if (allowed.includes('guest')) return children
   if (!role || role === 'guest') return <Navigate to="/login" replace />
   if (!allowed.includes(role)) return <Navigate to="/" replace />
   return children
 }
 
-// Role-based redirect after login
 const RoleBasedRedirect = () => {
   const { role } = useAuth()
-  if (role === 'guest') return <Navigate to="/" replace />
   if (role === 'admin') return <Navigate to="/admin" replace />
-  if (role === 'manager') return <Navigate to="/manager" replace />
+  if (role === 'teacher') return <Navigate to="/teacher" replace />
   return <Navigate to="/dashboard" replace />
 }
 
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* Root redirect - role-based */}
       <Route path="/app" element={<RoleBasedRedirect />} />
 
-      {/* Public pages */}
       <Route path="/" element={<MainLayout />}> 
         <Route index element={<Landing />} />
         <Route path="pricing" element={<Pricing />} />
@@ -69,37 +56,49 @@ export default function AppRoutes() {
         <Route path="/register" element={<Register />} />
       </Route>
 
-      {/* Member / authenticated (MainLayout) */}
-      <Route path="/" element={<MainLayout />}>
-        <Route
-          path="dashboard"
-          element={<ProtectedRoute allowed={['member', 'leader', 'manager', 'admin']}><Dashboard /></ProtectedRoute>}
-        />
-        <Route path="profile" element={<ProtectedRoute allowed={['member','leader','manager','admin']}><Profile /></ProtectedRoute>} />
-        <Route path="opportunities" element={<ProtectedRoute allowed={['member','leader','manager','admin']}><Opportunities /></ProtectedRoute>} />
-        <Route path="idea-generator" element={<ProtectedRoute allowed={['member','leader','manager','admin']}><IdeaGenerator /></ProtectedRoute>} />
-        <Route path="team-matching" element={<ProtectedRoute allowed={['member','leader','manager','admin']}><TeamMatching /></ProtectedRoute>} />
-        <Route path="workspace" element={<ProtectedRoute allowed={['member','leader','manager','admin']}><Workspace /></ProtectedRoute>} />
-        <Route path="analytics" element={<ProtectedRoute allowed={['member','leader','manager','admin']}><Analytics /></ProtectedRoute>} />
-
-        <Route path="team-management" element={<ProtectedRoute allowed={['leader','manager','admin']}><TeamManagement /></ProtectedRoute>} />
+      <Route 
+        path="/" 
+        element={
+          <ProtectedRoute allowed={['student', 'teacher', 'admin']}>
+            <MainLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="opportunities" element={<Opportunities />} />
+        <Route path="idea-generator" element={<IdeaGenerator />} />
+        <Route path="team-matching" element={<TeamMatching />} />
+        <Route path="workspace" element={<Workspace />} />
+        <Route path="analytics" element={<Analytics />} />
       </Route>
 
-      {/* Manager routes (MainLayout) */}
-      <Route path="/manager" element={<MainLayout />}>
-        <Route index element={<ProtectedRoute allowed={['manager','admin']}><ManagerDashboard /></ProtectedRoute>} />
-        <Route path="teams" element={<ProtectedRoute allowed={['manager','admin']}><TeamMonitoring /></ProtectedRoute>} />
-        <Route path="team/:id" element={<ProtectedRoute allowed={['manager','admin']}><TeamDetail /></ProtectedRoute>} />
-        <Route path="invitations" element={<ProtectedRoute allowed={['manager','admin']}><Invitations /></ProtectedRoute>} />
+      <Route 
+        path="/teacher" 
+        element={
+          <ProtectedRoute allowed={['teacher', 'admin']}>
+            <MainLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<TeacherDashboard />} />
+        <Route path="teams" element={<TeamMonitoring />} />
+        <Route path="invitations" element={<StudentInvitations />} />
       </Route>
 
-      {/* Admin routes (AdminLayout) */}
-      <Route path="/admin" element={<MainLayout />}>
-        <Route index element={<ProtectedRoute allowed={['admin']}><AdminDashboard /></ProtectedRoute>} />
-        <Route path="users" element={<ProtectedRoute allowed={['admin']}><UserManagement /></ProtectedRoute>} />
-        <Route path="subscriptions" element={<ProtectedRoute allowed={['admin']}><SubscriptionManagement /></ProtectedRoute>} />
-        <Route path="payments" element={<ProtectedRoute allowed={['admin']}><PaymentManagement /></ProtectedRoute>} />
-        <Route path="reports" element={<ProtectedRoute allowed={['admin']}><ReportManagement /></ProtectedRoute>} />
+      <Route 
+        path="/admin" 
+        element={
+          <ProtectedRoute allowed={['admin']}>
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<AdminDashboard />} />
+        <Route path="users" element={<UserManagement />} />
+        <Route path="subscriptions" element={<SubscriptionManagement />} />
+        <Route path="payments" element={<PaymentManagement />} />
+        <Route path="reports" element={<ReportManagement />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

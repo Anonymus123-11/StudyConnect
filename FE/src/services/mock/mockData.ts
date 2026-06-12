@@ -1,6 +1,6 @@
 // Mock data with relationships for a realistic SaaS platform
 
-export type UserRole = 'member' | 'leader' | 'manager' | 'admin'
+export type UserRole = 'student'  | 'teacher'  | 'admin'
 export type SubscriptionPlan = 'free' | 'premium' | 'enterprise'
 export type TaskStatus = 'todo' | 'in-progress' | 'completed'
 export type TeamStatus = 'active' | 'at-risk' | 'inactive'
@@ -95,7 +95,7 @@ export const mockUsers: User[] = [
     id: 'u1',
     name: 'Alice Johnson',
     email: 'alice@example.com',
-    role: 'member',
+    role: 'student',
     avatar: '👩‍💼',
     status: 'active',
     subscription: 'premium',
@@ -106,7 +106,7 @@ export const mockUsers: User[] = [
     id: 'u2',
     name: 'Bob Smith',
     email: 'bob@example.com',
-    role: 'leader',
+    role: 'teacher',
     avatar: '👨‍💼',
     status: 'active',
     subscription: 'premium',
@@ -117,7 +117,7 @@ export const mockUsers: User[] = [
     id: 'u3',
     name: 'Carol Williams',
     email: 'carol@example.com',
-    role: 'manager',
+    role: 'teacher',
     avatar: '👩‍🔬',
     status: 'active',
     subscription: 'enterprise',
@@ -139,7 +139,7 @@ export const mockUsers: User[] = [
     id: 'u5',
     name: 'Emma Davis',
     email: 'emma@example.com',
-    role: 'member',
+    role: 'student',
     avatar: '👩‍🎓',
     status: 'active',
     subscription: 'free',
@@ -150,7 +150,7 @@ export const mockUsers: User[] = [
     id: 'u6',
     name: 'Frank Miller',
     email: 'frank@example.com',
-    role: 'member',
+    role: 'student',
     avatar: '👨‍🎓',
     status: 'suspended',
     subscription: 'free',

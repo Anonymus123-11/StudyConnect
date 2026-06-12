@@ -6,7 +6,7 @@ export default function Register() {
   const nav = useNavigate()
 
   const handleRegister = () => {
-    login('member')
+    login('student')
     nav('/dashboard')
   }
 

@@ -2,7 +2,7 @@ import Card from '../../components/cards/Card'
 import { mockTeams, calculatePlatformStats } from '../../services/mock/mockData'
 import { useState } from 'react'
 
-export default function ManagerDashboard() {
+export default function TeacherDashboard() {
   const stats = calculatePlatformStats()
   const activeTeams = mockTeams.filter(t => t.status === 'active')
   const atRiskTeams = mockTeams.filter(t => t.status === 'at-risk')
@@ -22,7 +22,7 @@ export default function ManagerDashboard() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Manager Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6">Teacher Dashboard</h1>
 
       {/* Key Metrics */}
       <div className="grid md:grid-cols-4 gap-4 mb-6">
@@ -58,7 +58,7 @@ export default function ManagerDashboard() {
         <Card>
           <div className="flex items-center gap-2 mb-4 pb-2 border-b-2 border-[#FF6B00]">
             <span className="text-xl">⚡</span>
-            <h3 className="font-semibold text-lg">Manager Actions</h3>
+            <h3 className="font-semibold text-lg">Teacher Actions</h3>
           </div>
           <div className="space-y-2">
             <button className="w-full px-4 py-2 rounded bg-[#FF6B00] text-white hover:bg-[#E85A00] font-medium">+ Create Team</button>

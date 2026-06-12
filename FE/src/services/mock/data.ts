@@ -1,6 +1,7 @@
 export const mockUsers = [
-  { id: 'u1', name: 'Alice', email: 'alice@example.com', role: 'member' },
-  { id: 'u2', name: 'Bob', email: 'bob@example.com', role: 'leader' },
+  { id: 'u1', name: 'Alice', email: 'alice@example.com', role: 'student' },
+  { id: 'u2', name: 'Bob', email: 'bob@example.com', role: 'teacher' },
+  { id: 'u3', name: 'Charlie', email: 'charlie@example.com', role: 'admin' },
 ]
 
 export const mockOpportunities = Array.from({ length: 8 }).map((_, i) => ({
