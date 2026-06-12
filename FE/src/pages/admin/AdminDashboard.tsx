@@ -8,22 +8,30 @@ export default function AdminDashboard() {
   const totalStudents = mockUsers.filter(u => u.role === 'student').length
   const totalTeachers = mockUsers.filter(u => u.role === 'teacher').length
 
-  const activeUserFromStorage = localStorage.getItem('user')
-  let extraRevenue = 0
-  let currentTierName = 'free'
+  // Đọc toàn bộ các gói đã mua từ kho lưu trữ độc lập
+  const savedTiers = JSON.parse(localStorage.getItem('purchased_tiers') || '{}')
   
-  if (activeUserFromStorage) {
-    const parsedUser = JSON.parse(activeUserFromStorage)
-    currentTierName = parsedUser.tier || 'free'
-    if (currentTierName === 'student-basic') extraRevenue = 4.99
-    if (currentTierName === 'student-pro') extraRevenue = 9.99
-    if (currentTierName === 'teacher-pro') extraRevenue = 19.99
-  }
+  let extraRevenue = 0
+  let livePaymentsList: { plan: string; amount: number }[] = []
+
+  // Tính toán doanh thu tích lũy từ các role dữ liệu
+  Object.keys(savedTiers).forEach((role) => {
+    const tier = savedTiers[role]
+    let amount = 0
+    if (tier === 'student-basic') amount = 4.99
+    if (tier === 'student-pro') amount = 9.99
+    if (tier === 'teacher-pro') amount = 19.99
+    
+    if (amount > 0) {
+      extraRevenue += amount
+      livePaymentsList.push({ plan: `${role} (${tier})`, amount })
+    }
+  })
 
   const baseRevenueToday = 125.50
   const revenueToday = baseRevenueToday + extraRevenue
   const revenueThisMonth = stats.totalRevenue + extraRevenue
-  const newRegistrationsToday = 14 + (currentTierName !== 'free' ? 1 : 0)
+  const newRegistrationsToday = 14 + (livePaymentsList.length)
 
   const StatCard = ({ label, value, subtext, icon }: { label: string; value: string | number; subtext?: string; icon: string }) => (
     <div className="card border-l-4 border-[#FF6B00] bg-white p-4 rounded shadow-sm">
@@ -92,13 +100,13 @@ export default function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {extraRevenue > 0 && (
-                  <tr className="border-b bg-green-50 animate-pulse">
-                    <td className="p-2 capitalize font-medium text-green-700">{currentTierName.replace('-', ' ')}</td>
-                    <td className="p-2 font-bold text-green-700">${extraRevenue.toFixed(2)}</td>
+                {livePaymentsList.map((item, idx) => (
+                  <tr key={idx} className="border-b bg-green-50 animate-pulse">
+                    <td className="p-2 capitalize font-medium text-green-700">{item.plan}</td>
+                    <td className="p-2 font-bold text-green-700">${item.amount.toFixed(2)}</td>
                     <td className="p-2"><span className="px-2 py-1 rounded bg-green-200 text-green-800 text-xs">Success (Live)</span></td>
                   </tr>
-                )}
+                ))}
                 {mockPayments.slice(-3).map(p => (
                   <tr key={p.id} className="border-b hover:bg-[#FFF4E8]">
                     <td className="p-2 capitalize">{p.plan}</td>
@@ -110,15 +118,6 @@ export default function AdminDashboard() {
             </table>
           </div>
         </Card>
-      </div>
-
-      <div className="mt-6 card bg-white p-4 rounded shadow-sm">
-        <h3 className="font-semibold mb-3">Admin Controls</h3>
-        <div className="grid md:grid-cols-3 gap-2">
-          <button className="px-4 py-2 rounded bg-[#FF6B00] text-white hover:bg-[#E85A00] font-medium">👥 Manage Users</button>
-          <button className="px-4 py-2 rounded bg-[#FF6B00] text-white hover:bg-[#E85A00] font-medium">💳 Manage Subscriptions</button>
-          <button className="px-4 py-2 rounded bg-[#FF6B00] text-white hover:bg-[#E85A00] font-medium">📊 View Reports</button>
-        </div>
       </div>
     </div>
   )

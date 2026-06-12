@@ -2,7 +2,10 @@ import { useAuth, UserTier } from '../../contexts/AuthContext'
 
 export default function Pricing() {
   const { user, updateTier } = useAuth()
-  const currentTier = user?.tier || 'free'
+  
+  // Đọc gói cước từ bộ lưu trữ chung hoặc fallback về gói hiện tại của user
+  const savedTiers = JSON.parse(localStorage.getItem('purchased_tiers') || '{}')
+  const currentTier = user ? (savedTiers[user.role] || user.tier || 'free') : 'free'
 
   const handlePayment = (tier: UserTier, method: 'MoMo' | 'VNPay') => {
     if (!user) {
@@ -12,7 +15,14 @@ export default function Pricing() {
     
     const confirmPay = window.confirm(`[Mock Payment] Do you want to pay for ${tier.toUpperCase()} via ${method}?`)
     if (confirmPay) {
+      // 1. Cập nhật trạng thái user hiện tại
       updateTier(tier)
+      
+      // 2. Lưu vào kho lưu trữ vĩnh viễn theo Role để Admin kiểm tra chéo
+      const currentSaved = JSON.parse(localStorage.getItem('purchased_tiers') || '{}')
+      currentSaved[user.role] = tier
+      localStorage.setItem('purchased_tiers', JSON.stringify(currentSaved))
+
       alert(`Success! Your account has been upgraded to ${tier.toUpperCase()}.`)
     }
   }
